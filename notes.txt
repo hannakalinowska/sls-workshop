@@ -1,0 +1,7 @@
+unset AWS_SECRET_ACCESS_KEY and AWS_ACCESS_KEY_ID
+sls deploy -v
+
+npm run sls -- invoke local --function hello
+npm run sls -- deploy
+npm run sls -- remove
+
