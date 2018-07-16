@@ -79,6 +79,8 @@ functions:
             - - "https://"
               - Ref: ApiGatewayRestApi
               - ".execute-api.${opt:region}.amazonaws.com/${opt:stage}/restaurants"
+        cognito_user_pool_id: us-east-1_je6UQ5CcC
+        cognito_client_id: 6ctf71vs796d4d2c1li9643m8t
   get-restaurants:
     handler: functions/get-restaurants.handler
     events:
@@ -86,6 +88,16 @@ functions:
           path: /restaurants/
           method: get
           authorizer: aws_iam
+    environment:
+      restaurants_table: restaurants-hkalinow
+  search-restaurants:
+    handler: functions/search-restaurants.handler
+    events:
+      - http:
+          path: /restaurants/search/
+          method: post
+          authorizer:
+            arn: arn:aws:cognito-idp:#{AWS::Region}:#{AWS::AccountId}:userpool/us-east-1_je6UQ5CcC
     environment:
       restaurants_table: restaurants-hkalinow
 
