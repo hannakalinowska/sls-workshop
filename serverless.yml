@@ -20,7 +20,15 @@ service: workshop-hkalinow
 provider:
   name: aws
   runtime: nodejs8.10
+  profile: sb-dojo
 
+  iamRoleStatements:
+  - Effect: Allow
+    Action: dynamodb:scan
+    Resource:
+      Fn::GetAtt:
+        - restaurantsTable
+        - Arn
 # you can overwrite defaults here
 #  stage: dev
 #  region: us-east-1
@@ -55,8 +63,27 @@ provider:
 #    - exclude-me-dir/**
 
 functions:
-  hello:
-    handler: handler.hello
+  get-index:
+    handler: functions/get-index.handler
+    events:
+      - http:
+          path: /
+          method: get
+    environment:
+        restaurants_api:
+          Fn::Join:
+            - ''
+            - - "https://"
+              - Ref: ApiGatewayRestApi
+              - ".execute-api.${opt:region}.amazonaws.com/${opt:stage}/restaurants"
+  get-restaurants:
+    handler: functions/get-restaurants.handler
+    events:
+      - http:
+          path: /restaurants/
+          method: get
+    environment:
+      restaurants_table: restaurants-hkalinow
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
@@ -92,6 +119,21 @@ functions:
 #      variable2: value2
 
 # you can add CloudFormation resource templates here
+resources:
+  Resources:
+    restaurantsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: restaurants-hkalinow
+        AttributeDefinitions:
+          - AttributeName: name
+            AttributeType: S
+        KeySchema:
+          - AttributeName: name
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
 #resources:
 #  Resources:
 #    NewResource:
