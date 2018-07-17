@@ -4,18 +4,22 @@
   "main": "index.js",
   "scripts": {
     "sls": "serverless",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/.bin/mocha tests/test_cases --reporter spec"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "chai": "^4.1.2",
+    "cheerio": "^1.0.0-rc.2",
+    "mocha": "^5.2.0",
     "serverless": "^1.28.0",
     "serverless-pseudo-parameters": "^1.6.0"
   },
   "dependencies": {
     "aws-sdk": "^2.275.1",
     "aws4": "^1.7.0",
+    "awscred": "^1.4.1",
+    "lodash": "^4.17.10",
     "mustache": "^2.3.0",
     "superagent": "^3.8.3",
     "superagent-promise": "^1.1.0"
