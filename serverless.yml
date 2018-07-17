@@ -20,7 +20,6 @@ service: workshop-hkalinow
 provider:
   name: aws
   runtime: nodejs8.10
-  profile: sb-dojo
 
   iamRoleStatements:
   - Effect: Allow
