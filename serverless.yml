@@ -78,8 +78,8 @@ functions:
             - - "https://"
               - Ref: ApiGatewayRestApi
               - ".execute-api.${opt:region}.amazonaws.com/${opt:stage}/restaurants"
-        cognito_user_pool_id: us-east-1_je6UQ5CcC
-        cognito_client_id: 6ctf71vs796d4d2c1li9643m8t
+        cognito_user_pool_id: ${ssm:/workshop-hkalinow/dev/cognito_user_pool_id}
+        cognito_client_id: ${ssm:/workshop-hkalinow/dev/cognito_web_client_id}
   get-restaurants:
     handler: functions/get-restaurants.handler
     events:
@@ -88,7 +88,7 @@ functions:
           method: get
           authorizer: aws_iam
     environment:
-      restaurants_table: restaurants-hkalinow
+      restaurants_table: ${ssm:/workshop-hkalinow/dev/table_name}
   search-restaurants:
     handler: functions/search-restaurants.handler
     events:
@@ -98,7 +98,7 @@ functions:
           authorizer:
             arn: arn:aws:cognito-idp:#{AWS::Region}:#{AWS::AccountId}:userpool/us-east-1_je6UQ5CcC
     environment:
-      restaurants_table: restaurants-hkalinow
+      restaurants_table: ${ssm:/workshop-hkalinow/dev/table_name}
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
@@ -139,7 +139,7 @@ resources:
     restaurantsTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: restaurants-hkalinow
+        TableName: ${ssm:/workshop-hkalinow/dev/table_name}
         AttributeDefinitions:
           - AttributeName: name
             AttributeType: S
